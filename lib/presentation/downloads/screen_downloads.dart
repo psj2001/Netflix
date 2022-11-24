@@ -43,12 +43,12 @@ class Section2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<DownloadsBloc>(context)
+          .add(const DownloadsEvent.getDownloadsImages());
+    });
     // BlocProvider.of<DownloadsBloc>(context)
-    //   .add(const DownloadsEvent.getDownloadsImages());
-    //});
-    BlocProvider.of<DownloadsBloc>(context)
-        .add(const DownloadsEvent.getDownloadsImages());
+    //     .add(const DownloadsEvent.getDownloadsImages());
     final Size size = MediaQuery.of(context).size;
 
     return Column(
@@ -74,41 +74,43 @@ class Section2 extends StatelessWidget {
             return SizedBox(
               width: 400,
               height: 360,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: CircleAvatar(
-                      backgroundColor: Colors.grey.withOpacity(0.5),
-                      radius: size.width * 0.4,
+              child: state.isLoading
+                  ? const Center(child: const CircularProgressIndicator())
+                  : Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Center(
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey.withOpacity(0.5),
+                            radius: size.width * 0.4,
+                          ),
+                        ),
+                        DownloadsImageWidget(
+                          imageList: (state.downloads.length > 0
+                              ? '$imageAppendUrl${state.downloads[0].posterPath}'
+                              : ''),
+                          margin: EdgeInsets.only(left: 170, top: 52),
+                          angle: 25,
+                          size: Size(size.width * 0.35, size.width * 0.55),
+                        ),
+                        DownloadsImageWidget(
+                          imageList: (state.downloads.length > 1
+                              ? '$imageAppendUrl${state.downloads[1].posterPath}'
+                              : ''),
+                          margin: EdgeInsets.only(right: 170, top: 50),
+                          angle: -20,
+                          size: Size(size.width * 0.35, size.width * 0.55),
+                        ),
+                        DownloadsImageWidget(
+                          imageList: (state.downloads.length > 2
+                              ? '$imageAppendUrl${state.downloads[2].posterPath}'
+                              : ''),
+                          radius: 8,
+                          margin: EdgeInsets.only(bottom: 38, top: 50),
+                          size: Size(size.width * 0.4, size.width * 0.6),
+                        ),
+                      ],
                     ),
-                  ),
-                  DownloadsImageWidget(
-                    imageList: (state.downloads.length > 0
-                        ? '$imageAppendUrl${state.downloads[0].posterPath}'
-                        : ''),
-                    margin: EdgeInsets.only(left: 170, top: 52),
-                    angle: 25,
-                    size: Size(size.width * 0.35, size.width * 0.55),
-                  ),
-                  DownloadsImageWidget(
-                    imageList: (state.downloads.length > 1
-                        ? '$imageAppendUrl${state.downloads[1].posterPath}'
-                        : ''),
-                    margin: EdgeInsets.only(right: 170, top: 50),
-                    angle: -20,
-                    size: Size(size.width * 0.35, size.width * 0.55),
-                  ),
-                  DownloadsImageWidget(
-                    imageList: (state.downloads.length > 2
-                        ? '$imageAppendUrl${state.downloads[2].posterPath}'
-                        : ''),
-                    radius: 8,
-                    margin: EdgeInsets.only(bottom: 38, top: 50),
-                    size: Size(size.width * 0.4, size.width * 0.6),
-                  ),
-                ],
-              ),
             );
           },
         ),
